@@ -4,21 +4,21 @@ import './App.css';
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App d-flex flex-column">
+        <header>
+            <img src={logo} alt='logo' className='App-logo'/>
+        </header>
+        <main className='container-md'>
+            <form className='row justify-content-around'>
+                <input type="text" placeholder='Enter YouTube video URL' className='col-sm-6 form-control'/>
+                <button className='col-sm-2 btn btn-primary'>Dig!</button>
+            </form>
+        </main>
+        <footer className='container-md align-self-end mt-auto'>            
+            <address>
+                <a href="mailto: arseniy.rubtsov@gmail.com">Arseniy Rubtsov</a>
+            </address>            
+        </footer>
     </div>
   );
 }
