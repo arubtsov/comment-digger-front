@@ -2,6 +2,7 @@ import React from 'react';
 
 import './App.css';
 import Header from '../header';
+import Footer from '../footer';
 
 const App: React.FC = () => {
   return (
@@ -13,11 +14,7 @@ const App: React.FC = () => {
                 <button className='col-sm-2 btn btn-primary'>Dig!</button>
             </form>
         </main>
-        <footer className='container-md align-self-end mt-auto'>            
-            <address>
-                <a href="mailto: arseniy.rubtsov@gmail.com">Arseniy Rubtsov</a>
-            </address>            
-        </footer>
+        <Footer/>
     </div>
   );
 }
