@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import BubbleChart from '../bubble-chart';
+
 const MainInput: React.FC<React.HTMLProps<HTMLInputElement>> = (props) => {
     return (
         <input type="text"
@@ -9,7 +11,7 @@ const MainInput: React.FC<React.HTMLProps<HTMLInputElement>> = (props) => {
 };
 
 const Main: React.FC = () => {
-    const [state, setState] = useState({ url: '', isLoading: false, data: null });
+    const [state, setState] = useState({ url: '', isLoading: false, data: [] });
     const onUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => setState(prev =>({ ...prev, url: event.target.value }));
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -27,7 +29,7 @@ const Main: React.FC = () => {
                             if (response.status === 200) {
                                 clearInterval(interval);
 
-                                response.json().then(data => setState(prev => ({ ...prev, data, isLoading: false })))
+                                response.json().then(data => setState(prev => ({ ...prev, data: data.mostCommon, isLoading: false })))
                             }
                         })
                 }, 5000);
@@ -36,10 +38,19 @@ const Main: React.FC = () => {
 
     return (
         <main className='container-md'>
-            <form className='row justify-content-around' onSubmit={onSubmit}>
+            <form className='row justify-content-around' onSubmit={onSubmit}>                
                 <MainInput value={state.url} onChange={onUrlChange}/>
-                <button className='col-sm-2 btn btn-primary' disabled={!state.url || state.isLoading}>Dig!</button>
-            </form>         
+                <button className='col-sm-2 btn btn-primary' disabled={!state.url || state.isLoading}>
+                {
+                    state.isLoading ? (
+                        <div className="spinner-border spinner-border-sm text-light" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    ) : 'Dig!'
+                }
+                </button>
+            </form>
+            <BubbleChart data={state.data}/>
         </main>
     );
 };
