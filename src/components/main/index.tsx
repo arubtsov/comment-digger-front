@@ -20,11 +20,11 @@ const Main: React.FC = () => {
         const urlObject = new URL(state.url);
         const videoId = urlObject.searchParams.get('v');
 
-        fetch(`http://comment-digger-back.herokuapp.com/?videoId=${videoId}`)
+        fetch(`https://comment-digger-back.herokuapp.com/?videoId=${videoId}`)
             .then(response => response.text())
             .then(jobId => {
                 const interval = setInterval(() => {
-                    fetch(`http://comment-digger-back.herokuapp.com/results/${jobId}?number=${50}`)
+                    fetch(`https://comment-digger-back.herokuapp.com/results/${jobId}?number=${50}`)
                         .then(response => {
                             if (response.status === 200) {
                                 clearInterval(interval);
