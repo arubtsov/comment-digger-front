@@ -3,14 +3,6 @@ import React, { useState } from 'react';
 import BubbleChart from '../bubble-chart';
 import { requestCommentsLoading, fetchResults, MostCommon } from '../../utils/back-end-calls';
 
-const MainInput: React.FC<React.HTMLProps<HTMLInputElement>> = (props) => {
-    return (
-        <input type="text"
-            placeholder='Enter YouTube video URL'
-            className='col-sm-6 form-control' {...props}/>
-    )
-};
-
 const Main: React.FC = () => {
     const [state, setState] = useState({ url: '', isLoading: false, data: [] as MostCommon[] });
     const onUrlChange = function (event: React.ChangeEvent<HTMLInputElement>) {
@@ -36,18 +28,24 @@ const Main: React.FC = () => {
     };
 
     return (
-        <main className='container-md'>
-            <form className='row justify-content-around' onSubmit={onSubmit}>                
-                <MainInput value={state.url} onChange={onUrlChange}/>
-                <button className='col-sm-2 btn btn-primary' disabled={!state.url || state.isLoading}>
-                {
-                    state.isLoading ? (
-                        <div className="spinner-border spinner-border-sm text-light" role="status">
-                            <span className="sr-only">Loading...</span>
-                        </div>
-                    ) : 'Dig!'
-                }
-                </button>
+        <main className='container'>
+            <form className='form' onSubmit={onSubmit}>
+                <div className='row'>
+                    <div className='col-sm'>
+                        <input type="text" className="form-control mb-2" placeholder="Enter YouTube video URL" onChange={onUrlChange}/>
+                    </div>
+                    <div className='col-sm-2'>
+                        <button className='form-control btn btn-primary mb-2' disabled={!state.url || state.isLoading}>
+                        {
+                            state.isLoading ? (
+                                <div className="spinner-border spinner-border-sm text-light" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </div>
+                            ) : 'Dig!'
+                        }
+                        </button>
+                    </div>
+                </div>
             </form>
             <BubbleChart data={state.data}/>
         </main>
