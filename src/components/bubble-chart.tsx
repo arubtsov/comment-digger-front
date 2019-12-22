@@ -40,13 +40,16 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ data }) => {
             .attr("fill-opacity", 0.7)
             .attr("fill", 'navy');
 
-        leaf.append("text")            
-            .text(function (d) {
-                return typeof d.data[0] === 'string' ? d.data[0] : d.data[0].join(' ')
+        leaf.append("text")
+            .selectAll("tspan")
+            .data(function (d) {
+                return typeof d.data[0] === 'string' ? [d.data[0]] : d.data[0]
             })
+            .join("tspan")
             .style('fill', 'white')
             .attr("x", 0)
-            .attr("y", 0);
+            .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.8}em`)
+            .text(d => d);
                 
     }, [data]);
 
