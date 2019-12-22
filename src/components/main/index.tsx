@@ -4,23 +4,38 @@ import BubbleChart from '../bubble-chart';
 import { requestCommentsLoading, fetchResults, MostCommon } from '../../utils/back-end-calls';
 
 const Main: React.FC = () => {
-    const [state, setState] = useState({ url: '', isLoading: false, data: [] as MostCommon[] });
+    const [state, setState] = useState({ url: '', isLoading: false, data: [] as MostCommon[], error: '' });
+
     const onUrlChange = function (event: React.ChangeEvent<HTMLInputElement>) {
         const { value } = event.target;
 
         setState(function (prev)  {
-            return { ...prev, url: value };
+            return { ...prev, url: value, error: '' };
         });
     };
+
+    const showError = (error: string) => setState(prev => ({ ...prev, error, isLoading: false }));
+
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setState(prev => ({ ...prev, isLoading: true }));
 
-        const urlObject = new URL(state.url);
-        const videoId = urlObject.searchParams.get('v');
+        let videoId = null;
 
-        if (!videoId)
-            throw new Error('Mailformed URL');
+        try {
+            const urlObject = new URL(state.url);
+
+            videoId = urlObject.searchParams.get('v');
+        }
+        catch (error) {
+            showError(error.message);
+            return;
+        }        
+
+        if (!videoId) {
+            showError('Mailformed URL: youtube video ourl should contain "v" parameter.');
+            return;
+        }
 
         requestCommentsLoading(videoId)
             .then(jobId => fetchResults(jobId, 50))
@@ -47,6 +62,9 @@ const Main: React.FC = () => {
                     </div>
                 </div>
             </form>
+            {
+                state.error && <div className="alert alert-danger" role="alert">{state.error}</div>
+            }
             <BubbleChart data={state.data}/>
         </main>
     );
