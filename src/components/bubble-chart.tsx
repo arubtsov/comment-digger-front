@@ -1,10 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
+import { MostCommon } from '../utils/back-end-calls';
 
 const width = 500;
 const height = 500;
-
-export type MostCommon = [string | [string, string], number];
 
 interface BubbleChartProps {
     data: MostCommon[]

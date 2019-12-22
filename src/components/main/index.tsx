@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import BubbleChart from '../bubble-chart';
-import { requestCommentsLoading } from '../../utils/back-end-calls';
+import { requestCommentsLoading, fetchResults, MostCommon } from '../../utils/back-end-calls';
 
 const MainInput: React.FC<React.HTMLProps<HTMLInputElement>> = (props) => {
     return (
@@ -12,7 +12,7 @@ const MainInput: React.FC<React.HTMLProps<HTMLInputElement>> = (props) => {
 };
 
 const Main: React.FC = () => {
-    const [state, setState] = useState({ url: '', isLoading: false, data: [] });
+    const [state, setState] = useState({ url: '', isLoading: false, data: [] as MostCommon[] });
     const onUrlChange = function (event: React.ChangeEvent<HTMLInputElement>) {
         const { value } = event.target;
 
@@ -30,19 +30,9 @@ const Main: React.FC = () => {
         if (!videoId)
             throw new Error('Mailformed URL');
 
-        requestCommentsLoading(videoId)        
-            .then(jobId => {
-                const interval = setInterval(() => {
-                    fetch(`https://comment-digger-back.herokuapp.com/results/${jobId}?number=${50}`)
-                        .then(response => {
-                            if (response.status === 200) {
-                                clearInterval(interval);
-
-                                response.json().then(data => setState(prev => ({ ...prev, data: data.mostCommon, isLoading: false })))
-                            }
-                        })
-                }, 5000);
-            });
+        requestCommentsLoading(videoId)
+            .then(jobId => fetchResults(jobId, 50))
+            .then(data => setState(prev => ({ ...prev, data: data.mostCommon, isLoading: false })));
     };
 
     return (
