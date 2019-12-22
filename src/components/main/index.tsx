@@ -50,7 +50,7 @@ const Main: React.FC = () => {
                         <input type="text" className="form-control mb-2" placeholder="Enter YouTube video URL" onChange={onUrlChange}/>
                     </div>
                     <div className='col-sm-2'>
-                        <button className='form-control btn btn-primary mb-2' disabled={!state.url || state.isLoading}>
+                        <button className='form-control btn btn-primary mb-2 d-flex align-items-center justify-content-center' disabled={!state.url || state.isLoading}>
                         {
                             state.isLoading ? (
                                 <div className="spinner-border spinner-border-sm text-light" role="status">
