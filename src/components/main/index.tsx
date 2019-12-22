@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import BubbleChart from '../bubble-chart';
+import { requestCommentsLoading } from '../../utils/back-end-calls';
 
 const MainInput: React.FC<React.HTMLProps<HTMLInputElement>> = (props) => {
     return (
@@ -14,7 +15,7 @@ const Main: React.FC = () => {
     const [state, setState] = useState({ url: '', isLoading: false, data: [] });
     const onUrlChange = function (event: React.ChangeEvent<HTMLInputElement>) {
         const { value } = event.target;
-        
+
         setState(function (prev)  {
             return { ...prev, url: value };
         });
@@ -26,8 +27,10 @@ const Main: React.FC = () => {
         const urlObject = new URL(state.url);
         const videoId = urlObject.searchParams.get('v');
 
-        fetch(`https://comment-digger-back.herokuapp.com/?videoId=${videoId}`)
-            .then(response => response.text())
+        if (!videoId)
+            throw new Error('Mailformed URL');
+
+        requestCommentsLoading(videoId)        
             .then(jobId => {
                 const interval = setInterval(() => {
                     fetch(`https://comment-digger-back.herokuapp.com/results/${jobId}?number=${50}`)
