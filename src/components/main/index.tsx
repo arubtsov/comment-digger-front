@@ -12,7 +12,13 @@ const MainInput: React.FC<React.HTMLProps<HTMLInputElement>> = (props) => {
 
 const Main: React.FC = () => {
     const [state, setState] = useState({ url: '', isLoading: false, data: [] });
-    const onUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => setState(prev =>({ ...prev, url: event.target.value }));
+    const onUrlChange = function (event: React.ChangeEvent<HTMLInputElement>) {
+        const { value } = event.target;
+        
+        setState(function (prev)  {
+            return { ...prev, url: value };
+        });
+    };
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setState(prev => ({ ...prev, isLoading: true }));
