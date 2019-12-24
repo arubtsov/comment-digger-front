@@ -5,7 +5,7 @@ export function requestCommentsLoading(videoId: string): Promise<string> {
         .then(response => response.text());
 }
 
-function delay (timeout: number = 3000): Promise<void> {
+function delay (timeout: number = 1000): Promise<void> {
     return new Promise(resolve => {
         setTimeout(resolve, timeout);
     });
@@ -27,12 +27,14 @@ interface Results {
     mostCommon: MostCommon[]
 }
 
-export function fetchResults (jobId: string, top: number): Promise<Results> {
+export function fetchResults (jobId: string, top: number, updateCallback: (progress: string) => void): Promise<Results> {
     return delay()
         .then(() => fetch(`${BASE_URL}results/${jobId}?number=${top}`))
         .then(response => {
-            if (response.status === 202)
-                return fetchResults(jobId, top);
+            if (response.status === 202) {
+                response.text().then(updateCallback);
+                return fetchResults(jobId, top, updateCallback);
+            }
             else if (response.status === 200)
                 return response.json() as Promise<Results>;
             
