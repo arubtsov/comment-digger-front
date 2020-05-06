@@ -37,7 +37,7 @@ const Main: React.FC = () => {
         catch (error) {
             showError(error.message);
             return;
-        }        
+        }
 
         if (!videoId) {
             showError('Mailformed URL: youtube video ourl should contain "v" parameter.');
