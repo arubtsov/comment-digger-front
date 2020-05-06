@@ -21,7 +21,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:ci": "cross-env CI=true react-scripts test",
+    "test:ci": "cross-env CI=true testcafe chrome:headless mock-test.js -r dashboard",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -40,6 +40,8 @@
     ]
   },
   "devDependencies": {
-    "cross-env": "^7.0.2"
+    "cross-env": "^7.0.2",
+    "testcafe": "^1.8.4",
+    "testcafe-reporter-dashboard": "file:./testcafe-reporter-dashboard-0.0.8.tgz"
   }
 }
