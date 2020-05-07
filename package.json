@@ -42,6 +42,6 @@
   "devDependencies": {
     "cross-env": "^7.0.2",
     "testcafe": "^1.8.4",
-    "testcafe-reporter-dashboard": "file:./testcafe-reporter-dashboard-0.0.8.tgz"
+    "testcafe-reporter-dashboard": "file:testcafe-reporter-dashboard-0.0.8.tgz"
   }
 }
