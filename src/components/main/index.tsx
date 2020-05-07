@@ -7,6 +7,7 @@ import { requestCommentsLoading, fetchResults, MostCommon } from '../../utils/ba
 const Main: React.FC = () => {
     const [state, setState] = useState({ url: '', isLoading: false, data: [] as MostCommon[], error: '', progress: 0 });
 
+
     const onUrlChange = function (event: React.ChangeEvent<HTMLInputElement>) {
         const { value } = event.target;
 
@@ -37,7 +38,7 @@ const Main: React.FC = () => {
         catch (error) {
             showError(error.message);
             return;
-        }        
+        }
 
         if (!videoId) {
             showError('Mailformed URL: youtube video ourl should contain "v" parameter.');
