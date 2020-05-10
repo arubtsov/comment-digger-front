@@ -28,13 +28,13 @@ interface Results {
     mostCommon: MostCommon[]
 }
 
-async function fetchResults (jobId: string, top: number, updateCallback: (progress: string) => void): Promise<Results> {
+async function fetchResults (jobId: string, top: number, updateCallback: (progress: number) => void): Promise<Results> {
     await delay();
 
     const response = await fetch(`${BASE_URL}results/${jobId}?number=${top}`);
 
     if (response.status === 202) {
-        response.text().then(updateCallback);
+        response.text().then(progress => updateCallback(parseFloat(progress) * 100));
 
         return fetchResults(jobId, top, updateCallback);
     }

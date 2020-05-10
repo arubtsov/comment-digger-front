@@ -11,6 +11,8 @@ type BackendHook = () => {
     onLoadData: () => void;
 }
 
+const MAILFORMED_URL_MESSAGE = 'Mailformed URL: youtube video ourl should contain "v" parameter.';
+
 const useBackend: BackendHook = () => {
     const [url, setUrl] = useState('');
     const [isLoading, setLoading] = useState(false);
@@ -30,28 +32,22 @@ const useBackend: BackendHook = () => {
         setProgress(0);
     };
 
-    const updateProgress = (progress: string): void => {
-        setProgress(parseFloat(progress) * 100);
-    };
-
     const onLoadData = () => {
         setLoading(true);
 
         let videoId: string | null = '';
+        let errorMessage = '';
 
         try {
-            const urlObject = new URL(url);
-
-            videoId = urlObject.searchParams.get('v');
+            videoId = new URL(url).searchParams.get('v');
         }
         catch (error) {
-            showError(error.message);
-            return;
+            errorMessage = error.message;
         }
 
         if (videoId) {
             requestCommentsLoading(videoId)
-                .then(jobId => fetchResults(jobId, 50, updateProgress))
+                .then(jobId => fetchResults(jobId, 50, setProgress))
                 .then(data => {
                     setData(data.mostCommon);
                     setLoading(false);
@@ -59,7 +55,7 @@ const useBackend: BackendHook = () => {
                 });
         }
         else
-            showError('Mailformed URL: youtube video ourl should contain "v" parameter.');
+            showError(errorMessage || MAILFORMED_URL_MESSAGE);
     }
 
     return { url, isLoading, data, error, progress, onUrlChange, onLoadData };
