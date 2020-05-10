@@ -41,15 +41,14 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ data }) => {
 
         leaf.append("text")
             .selectAll("tspan")
-            .data(function (d) {
-                return typeof d.data[0] === 'string' ? [d.data[0]] : d.data[0]
-            })
+            .data(d => typeof d.data[0] === 'string' ? [d.data[0]] : d.data[0])
             .join("tspan")
             .style('fill', 'white')
             .attr("x", 0)
             .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.8}em`)
             .text(d => d);
-                
+
+        return () => { root.html('') };
     }, [data]);
 
     return (
