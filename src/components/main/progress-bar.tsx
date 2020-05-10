@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 interface ProgressBarProps {
     progress: number;
@@ -9,14 +9,17 @@ const componentStyle = {
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
-    const style = {
+    const progressStyle: CSSProperties = {
         width: `${progress}%`
     };
 
     return (
-        <div className="progress md-progress mb-2" style={componentStyle}>
-            <div className="progress-bar bg-info" role="progressbar" style={style} aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}></div>
-        </div>        
+        <div className="progress md-progress mb-2 flex-shrink-0" style={componentStyle}>
+            <div style={progressStyle}
+                 className="progress-bar bg-info" role="progressbar"
+                 aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
+            </div>
+        </div>
     );
 };
 
