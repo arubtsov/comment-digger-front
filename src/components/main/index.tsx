@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEventHandler } from 'react';
 
 import ProgressBar from './progress-bar';
 import BubbleChart from '../bubble-chart';
+import PrimaryButton from '../primary-button';
 import { requestCommentsLoading, fetchResults, MostCommon } from '../../utils/back-end-calls';
 
 const Main: React.FC = () => {
@@ -11,7 +12,7 @@ const Main: React.FC = () => {
     const [error, setError] = useState('');
     const [progress, setProgress] = useState(0);
 
-    const onUrlChange = function (event: React.ChangeEvent<HTMLInputElement>) {
+    const onUrlChange: ChangeEventHandler<HTMLInputElement> = event => {
         const { value } = event.target;
 
         setUrl(value);
@@ -66,10 +67,12 @@ const Main: React.FC = () => {
                 <form className='form' onSubmit={onSubmit}>
                     <div className='row'>
                         <div className='col-sm'>
-                            <input type="text" className="form-control mb-2" placeholder="Enter YouTube video URL" onChange={onUrlChange}/>
+                            <input type="text" className="form-control mb-2"
+                                   placeholder="Enter YouTube video URL"
+                                   onChange={onUrlChange}/>
                         </div>
                         <div className='col-sm-2'>
-                            <button className='form-control btn btn-primary mb-2 d-flex align-items-center justify-content-center' disabled={!url || isLoading}>
+                            <PrimaryButton className="form-control" disabled={!url || isLoading}>
                             {
                                 isLoading ? (
                                     <div className="spinner-border spinner-border-sm text-light" role="status">
@@ -77,7 +80,7 @@ const Main: React.FC = () => {
                                     </div>
                                 ) : 'Dig!'
                             }
-                            </button>
+                            </PrimaryButton>
                         </div>
                     </div>
                 </form>
