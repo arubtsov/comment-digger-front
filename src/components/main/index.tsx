@@ -5,32 +5,38 @@ import BubbleChart from '../bubble-chart';
 import { requestCommentsLoading, fetchResults, MostCommon } from '../../utils/back-end-calls';
 
 const Main: React.FC = () => {
-    const [state, setState] = useState({ url: '', isLoading: false, data: [] as MostCommon[], error: '', progress: 0 });
+    const [url, setUrl] = useState('');
+    const [isLoading, setLoading] = useState(false);
+    const [data, setData] = useState<MostCommon[]>([]);
+    const [error, setError] = useState('');
+    const [progress, setProgress] = useState(0);
 
     const onUrlChange = function (event: React.ChangeEvent<HTMLInputElement>) {
         const { value } = event.target;
 
-        setState(function (prev)  {
-            return { ...prev, url: value, error: '', progress: 0 };
-        });
+        setUrl(value);
+        setError('');
+        setProgress(0);
     };
 
-    const showError = (error: string) => setState(prev => ({ ...prev, error, isLoading: false, progress: 0 }));
+    const showError = (error: string) => {
+        setError(error);
+        setLoading(false);
+        setProgress(0);
+    };
 
     const updateProgress = (progress: string) => {
-        setState(function (prev) {
-            return { ...prev, progress: parseFloat(progress) * 100 };
-        });
+        setProgress(parseFloat(progress) * 100);
     };
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setState(prev => ({ ...prev, isLoading: true }));
+        setLoading(true);
 
         let videoId = null;
 
         try {
-            const urlObject = new URL(state.url);
+            const urlObject = new URL(url);
 
             videoId = urlObject.searchParams.get('v');
         }
@@ -46,12 +52,16 @@ const Main: React.FC = () => {
 
         requestCommentsLoading(videoId)
             .then(jobId => fetchResults(jobId, 50, updateProgress))
-            .then(data => setState(prev => ({ ...prev, data: data.mostCommon, isLoading: false })));
+            .then(data => {
+                setData(data.mostCommon);
+                setLoading(false);
+                setProgress(0);
+            });
     };
 
     return (
         <React.Fragment>
-            <ProgressBar progress={state.progress}/>
+            <ProgressBar progress={progress}/>
             <main className='container'>
                 <form className='form' onSubmit={onSubmit}>
                     <div className='row'>
@@ -59,9 +69,9 @@ const Main: React.FC = () => {
                             <input type="text" className="form-control mb-2" placeholder="Enter YouTube video URL" onChange={onUrlChange}/>
                         </div>
                         <div className='col-sm-2'>
-                            <button className='form-control btn btn-primary mb-2 d-flex align-items-center justify-content-center' disabled={!state.url || state.isLoading}>
+                            <button className='form-control btn btn-primary mb-2 d-flex align-items-center justify-content-center' disabled={!url || isLoading}>
                             {
-                                state.isLoading ? (
+                                isLoading ? (
                                     <div className="spinner-border spinner-border-sm text-light" role="status">
                                         <span className="sr-only">Loading...</span>
                                     </div>
@@ -72,9 +82,10 @@ const Main: React.FC = () => {
                     </div>
                 </form>
                 {
-                    state.error && <div className="alert alert-danger" role="alert">{state.error}</div>
+                    error &&
+                    <div className="alert alert-danger" role="alert">{error}</div>
                 }
-                <BubbleChart data={state.data}/>
+                <BubbleChart data={data}/>
             </main>
         </React.Fragment>
     );
