@@ -1,8 +1,9 @@
 const BASE_URL = 'https://comment-digger-back.herokuapp.com/';
 
-export function requestCommentsLoading(videoId: string): Promise<string> {
-    return fetch(`${BASE_URL}?videoId=${videoId}`)
-        .then(response => response.text());
+async function requestCommentsLoading(videoId: string): Promise<string> {
+    const response = await fetch(`${BASE_URL}?videoId=${videoId}`);
+
+    return await response.text();
 }
 
 function delay (timeout: number = 1000): Promise<void> {
@@ -27,17 +28,20 @@ interface Results {
     mostCommon: MostCommon[]
 }
 
-export function fetchResults (jobId: string, top: number, updateCallback: (progress: string) => void): Promise<Results> {
-    return delay()
-        .then(() => fetch(`${BASE_URL}results/${jobId}?number=${top}`))
-        .then(response => {
-            if (response.status === 202) {
-                response.text().then(updateCallback);
-                return fetchResults(jobId, top, updateCallback);
-            }
-            else if (response.status === 200)
-                return response.json() as Promise<Results>;
-            
-            throw new Error(`Server responded with "${response.status}": "${response.text}"`);
-        });
+async function fetchResults (jobId: string, top: number, updateCallback: (progress: string) => void): Promise<Results> {
+    await delay();
+
+    const response = await fetch(`${BASE_URL}results/${jobId}?number=${top}`);
+
+    if (response.status === 202) {
+        response.text().then(updateCallback);
+
+        return fetchResults(jobId, top, updateCallback);
+    }
+    else if (response.status === 200)
+        return response.json() as Promise<Results>;
+
+    throw new Error(`Server responded with "${response.status}": "${response.text}"`);
 }
+
+export { requestCommentsLoading, fetchResults };
