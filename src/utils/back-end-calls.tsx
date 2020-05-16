@@ -1,10 +1,6 @@
 const BASE_URL = 'https://comment-digger-back.herokuapp.com/';
 
-async function requestCommentsLoading(videoId: string): Promise<string> {
-    const response = await fetch(`${BASE_URL}?videoId=${videoId}`);
-
-    return await response.text();
-}
+const COMMENTS_URL = `${BASE_URL}comments/`;
 
 function delay (timeout: number = 1000): Promise<void> {
     return new Promise(resolve => {
@@ -22,26 +18,33 @@ interface Comment {
 
 export type MostCommon = [string | [string, string], number];
 
+interface Progress {
+    progress: number;
+}
+
 interface Results {
     count: Number;
     comments: Comment[];
     mostCommon: MostCommon[]
 }
 
-async function fetchResults (jobId: string, top: number, updateCallback: (progress: number) => void): Promise<Results> {
-    await delay();
+interface UpdateCallback {
+    (progress: number): void
+}
 
-    const response = await fetch(`${BASE_URL}results/${jobId}?number=${top}`);
+async function fetchResults (videoId: string, top: number, updateCallback: UpdateCallback): Promise<Results> {
+    const response = await fetch(`${COMMENTS_URL}${videoId}?number=${top}`);
 
     if (response.status === 202) {
-        response.text().then(progress => updateCallback(parseFloat(progress) * 100));
+        response.json().then(({ progress }: Progress) => updateCallback(progress * 100));
+        await delay();
 
-        return fetchResults(jobId, top, updateCallback);
+        return fetchResults(videoId, top, updateCallback);
     }
     else if (response.status === 200)
         return response.json() as Promise<Results>;
 
-    throw new Error(`Server responded with "${response.status}": "${response.text}"`);
+    throw new Error(`Server responded with "${response.status}": "${await response.text()}"`);
 }
 
-export { requestCommentsLoading, fetchResults };
+export { fetchResults };

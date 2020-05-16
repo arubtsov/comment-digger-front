@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { requestCommentsLoading, fetchResults, MostCommon } from '../../utils/back-end-calls';
+import { fetchResults, MostCommon } from '../../utils/back-end-calls';
 
 type BackendHook = () => {
     url: string;
@@ -46,8 +46,7 @@ const useBackend: BackendHook = () => {
         }
 
         if (videoId) {
-            requestCommentsLoading(videoId)
-                .then(jobId => fetchResults(jobId, 50, setProgress))
+            fetchResults(videoId, 50, setProgress)
                 .then(data => {
                     setData(data.mostCommon);
                     setLoading(false);
